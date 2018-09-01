@@ -189,8 +189,9 @@ float DivideByHundred(float x) {
 void PrintValues() {
   String descriptioninfo[] = { "Product ID", "Firmware", "Serial Number", "Battery Voltage", "Battery Current", "Panel Voltage", "Panel Power", "State of Operation", "Errors code", "Load State", "Load Current", "Yield Total", "Yield Today", "Maximum power today", "Yield yesterday", "Maximum power yesterday", "Days of utilization", "Checksum"  };
   for (int i = 0; i < num_keywords; i++) {
-    float nn; float kk;
+    float nn; float kk; int state;
     String varname = "V" + String(i);
+    String statename;
     Serial.print(keywords[i]);
     Serial.print(" - ");
     Serial.print(descriptioninfo[i]);
@@ -212,6 +213,28 @@ void PrintValues() {
         nn = atoi( value[i] ); kk = DivideByThousand(nn);
         Serial.println(kk);
         Blynk.virtualWrite(i, kk);
+        break;
+      case 7:
+        state = atoi(value[i]);
+        switch (state) {
+          case 0:
+            statename="Standby";
+            break;
+          case 2:
+            statename="Fault";
+            break;
+          case 3:
+            statename="Bulk";
+            break;
+          case 4:
+            statename="Absorption";
+            break;
+          case 5:
+            statename="Float";
+            break;
+        }
+        Serial.println(statename);
+        Blynk.virtualWrite(i, statename);
         break;
       case 11:
         nn = atoi( value[i] ); kk = DivideByHundred(nn);
