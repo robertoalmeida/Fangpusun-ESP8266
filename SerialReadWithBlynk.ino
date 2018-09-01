@@ -1,14 +1,17 @@
-/*
-    Victron.Arduino-ESP8266
-    A:Pim Rutgers
-    E:pim@physee.eu
+#define BLYNK_PRINT Serial
 
-    Code to grab data from the VE.Direct-Protocol on Arduino / ESP8266.
-    Tested on NodeMCU v1.0
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
 
-    The fields of the serial commands are configured in "config.h"
+// You should get Auth Token in the Blynk App.
+// Go to the Project Settings (nut icon).
+char auth[] = "YouKeyBlynkProject";
 
-*/
+// Your WiFi credentials.
+// Set password to "" for open networks.
+char ssid[] = "SSID";
+char pass[] = "PASSWORD";
+
 #include <SoftwareSerial.h>
 #include "config.h"
 
@@ -26,13 +29,27 @@ static byte blockindex = 0;
 bool new_data = false;
 bool blockend = false;
 
+BlynkTimer timer;
+
+// This function sends Arduino's up time every second to Virtual Pin (5).
+// In the app, Widget's reading frequency should be set to PUSH. This means
+// that you define how often to send data to Blynk App.
+void myTimerEvent()
+{
+  // You can send any value at any time.
+  // Please don't send more that 10 values per second.
+  Blynk.virtualWrite(V99, millis() / 60000);
+}
+
 void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(19200);
   victronSerial.begin(19200);
+  Blynk.begin(auth, ssid, pass, "blynk-cloud.com", 80);
 }
 
 void loop() {
+  Blynk.run();
   // Receive information on Serial from MPPT
   RecvWithEndMarker();
   HandleNewData();
@@ -173,40 +190,33 @@ void PrintValues() {
   String descriptioninfo[] = { "Product ID", "Firmware", "Serial Number", "Battery Voltage", "Battery Current", "Panel Voltage", "Panel Power", "State of Operation", "Errors code", "Load State", "Load Current", "Yield Total", "Yield Today", "Maximum power today", "Yield yesterday", "Maximum power yesterday", "Days of utilization", "Checksum"  };
   for (int i = 0; i < num_keywords; i++) {
     float nn; float kk;
-    String varname = "V" + String(i);
-    Serial.print(keywords[i]);
-    Serial.print(" - ");
-    Serial.print(descriptioninfo[i]);
-    Serial.print(" - ");
-    Serial.print(varname);
-    Serial.print(": ");
     switch (i) {
       case 3:
         nn = atoi( value[i] ); kk = DivideByThousand(nn);
-        Serial.println(kk);
+        Blynk.virtualWrite(i, kk);
         break;
       case 4:
         nn = atoi( value[i] ); kk = DivideByThousand(nn);
-        Serial.println(kk);
+        Blynk.virtualWrite(i, kk);
         break;
       case 5:
         nn = atoi( value[i] ); kk = DivideByThousand(nn);
-        Serial.println(kk);
+        Blynk.virtualWrite(i, kk);
         break;
       case 11:
         nn = atoi( value[i] ); kk = DivideByHundred(nn);
-        Serial.println(kk);
+        Blynk.virtualWrite(i, kk);
         break;
       case 12:
         nn = atoi( value[i] ); kk = DivideByHundred(nn);
-        Serial.println(kk);
+        Blynk.virtualWrite(i, kk);
         break;
       case 15:
         nn = atoi( value[i] ); kk = DivideByHundred(nn);
-        Serial.println(kk);
+        Blynk.virtualWrite(i, kk);
         break;
       default:
-        Serial.println(value[i]);
+        Blynk.virtualWrite(i, value[i]);
         break;
     }
   }
