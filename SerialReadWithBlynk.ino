@@ -246,6 +246,11 @@ void PrintValues() {
         Serial.println(kk);
         Blynk.virtualWrite(i, kk);
         break;
+      case 14:
+        nn = atoi( value[i] ); kk = DivideByHundred(nn);
+        Serial.println(kk);
+        Blynk.virtualWrite(i, kk);
+        break;
       case 15:
         nn = atoi( value[i] ); kk = DivideByHundred(nn);
         Serial.println(kk);
