@@ -1,0 +1,18 @@
+In blynk add the virtual displays:
+
+
+V0	Product ID	
+V1	Firmware	
+V2	Serial Number	
+V3	Battery Voltage			V
+V4	Battery Current			A
+V5	Panel Voltage			V
+V6	Panel Power			W
+V7	State of Operation	
+V11	Yield Total			kWh
+V12	Yield Today			kWh
+V13	Maximum power today		W
+V14	Yield yesterday			kWh
+V15	Maximum power yesterday		W
+V16	Days of utilization	
+
